@@ -62,7 +62,7 @@ function App() {
             setScanErrorCode(err.code || null);
             setScanError(
               err.code === 'not_a_bill'
-                ? "that's not a bill. or it's the world's most abstract bill."
+                ? "we don't think that's a bill. oops if it is."
                 : err.message || 'something went wrong scanning that bill'
             );
             goTo('upload');

@@ -25,8 +25,10 @@ export default function Upload({ onImageReady, scanError, scanErrorCode }) {
         >
           <div style={{ fontSize: 13, color: '#a32d2d' }}>{scanError}</div>
           {scanErrorCode === 'not_a_bill' && (
-            <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 8 }}>
-              tip: crop the photo so it's just the bill, then try again
+            <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 8, lineHeight: 1.6 }}>
+              if it is one, try cropping it so it's just the bill, then upload again.
+              <br />
+              if nothing works... looks like you're doing the math yourself this time.
             </div>
           )}
         </div>
