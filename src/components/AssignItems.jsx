@@ -1,8 +1,12 @@
 import { useState } from 'react';
 
-export default function AssignItems({ items, people, onChange, onNext, onBack }) {
+export default function AssignItems({ items, people, charges, onChange, onNext, onBack }) {
   const [localItems, setLocalItems] = useState(items);
   const [expandedId, setExpandedId] = useState(items[0]?.id ?? null);
+
+  const itemsTotal = localItems.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
+  const chargesTotal = (charges || []).reduce((sum, c) => sum + (c.amount || 0), 0);
+  const grandTotal = itemsTotal + chargesTotal;
 
   const toggleExpand = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -116,6 +120,11 @@ export default function AssignItems({ items, people, onChange, onNext, onBack })
           * marked items still need someone
         </div>
       )}
+
+      <div className="row" style={{ marginTop: 16, borderTop: '1px dashed var(--border)', paddingTop: 12 }}>
+        <span style={{ fontSize: 14, fontWeight: 700 }}>total</span>
+        <span style={{ fontSize: 14, fontWeight: 700 }}>{grandTotal.toFixed(2)}</span>
+      </div>
 
       <div className="actions">
         <button onClick={onBack}>back</button>

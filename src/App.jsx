@@ -97,6 +97,7 @@ function App() {
         <AssignItems
           items={items}
           people={people}
+          charges={charges}
           onChange={setItems}
           onNext={() => goTo('tax')}
           onBack={() => goTo('people')}

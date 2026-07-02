@@ -28,6 +28,9 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
     setLocalCharges([{ ...charge, amount: value }]);
   };
 
+  const itemsTotal = localItems.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
+  const grandTotal = itemsTotal + (charge.amount || 0);
+
   const handleNext = () => {
     onChange(localItems, localCharges);
     onNext();
@@ -46,30 +49,38 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
 
       <div className="card">
         {localItems.map((item) => (
-          <div key={item.id} className="row" style={{ gap: 8, marginBottom: 10 }}>
-            <input
-              type="text"
-              value={item.name}
-              placeholder="item name"
-              onChange={(e) => updateItem(item.id, 'name', e.target.value)}
-              style={{ flex: 1 }}
-            />
-            <input
-              type="number"
-              value={item.qty}
-              min="1"
-              onChange={(e) => updateItem(item.id, 'qty', Number(e.target.value))}
-              style={{ width: 44 }}
-            />
-            <input
-              type="number"
-              value={item.price}
-              onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))}
-              style={{ width: 72 }}
-            />
-            <button onClick={() => removeItem(item.id)} aria-label="remove item" style={{ padding: '6px 8px' }}>
-              <i className="ti ti-x" aria-hidden="true"></i>
-            </button>
+          <div key={item.id} style={{ marginBottom: 14 }}>
+            <div className="row" style={{ gap: 8, marginBottom: 6 }}>
+              <input
+                type="text"
+                value={item.name}
+                placeholder="item name"
+                onChange={(e) => updateItem(item.id, 'name', e.target.value)}
+                style={{ flex: 1 }}
+              />
+              <button onClick={() => removeItem(item.id)} aria-label="remove item" style={{ padding: '6px 8px' }}>
+                <i className="ti ti-x" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div className="row" style={{ gap: 8 }}>
+              <input
+                type="number"
+                value={item.qty}
+                min="1"
+                onChange={(e) => updateItem(item.id, 'qty', Number(e.target.value))}
+                style={{ width: 44 }}
+              />
+              <span style={{ fontSize: 12, color: 'var(--ink-soft)' }}>&times;</span>
+              <input
+                type="number"
+                value={item.price}
+                onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))}
+                style={{ width: 72 }}
+              />
+              <span style={{ fontSize: 13, marginLeft: 'auto' }}>
+                {(item.price * (item.qty || 1)).toFixed(2)}
+              </span>
+            </div>
           </div>
         ))}
         <button onClick={addItem} style={{ width: '100%' }}>
@@ -87,6 +98,11 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
             style={{ width: 96 }}
           />
         </div>
+      </div>
+
+      <div className="row" style={{ marginTop: 16, borderTop: '1px dashed var(--border)', paddingTop: 12 }}>
+        <span style={{ fontSize: 14, fontWeight: 700 }}>total</span>
+        <span style={{ fontSize: 14, fontWeight: 700 }}>{grandTotal.toFixed(2)}</span>
       </div>
 
       <div className="actions">
