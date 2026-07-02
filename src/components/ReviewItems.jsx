@@ -49,37 +49,36 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
 
       <div className="card">
         {localItems.map((item) => (
-          <div key={item.id} style={{ marginBottom: 14 }}>
-            <div className="row" style={{ gap: 8, marginBottom: 6 }}>
-              <input
-                type="text"
-                value={item.name}
-                placeholder="item name"
-                onChange={(e) => updateItem(item.id, 'name', e.target.value)}
-                style={{ flex: 1 }}
-              />
-              <button onClick={() => removeItem(item.id)} aria-label="remove item" style={{ padding: '6px 8px' }}>
-                <i className="ti ti-x" aria-hidden="true"></i>
-              </button>
-            </div>
-            <div className="row" style={{ gap: 8 }}>
+          <div
+            key={item.id}
+            style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginBottom: 14 }}
+          >
+            <input
+              type="text"
+              value={item.name}
+              placeholder="item name"
+              onChange={(e) => updateItem(item.id, 'name', e.target.value)}
+              style={{ flex: '1 1 120px', minWidth: 0 }}
+            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '0 0 auto', whiteSpace: 'nowrap' }}>
               <input
                 type="number"
                 value={item.qty}
                 min="1"
                 onChange={(e) => updateItem(item.id, 'qty', Number(e.target.value))}
-                style={{ width: 44 }}
+                style={{ width: 40 }}
               />
               <span style={{ fontSize: 12, color: 'var(--ink-soft)' }}>&times;</span>
               <input
                 type="number"
                 value={item.price}
                 onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))}
-                style={{ width: 72 }}
+                style={{ width: 64 }}
               />
-              <span style={{ fontSize: 13, marginLeft: 'auto' }}>
-                {(item.price * (item.qty || 1)).toFixed(2)}
-              </span>
+              <span style={{ fontSize: 13 }}>&#8377;{(item.price * (item.qty || 1)).toFixed(2)}</span>
+              <button onClick={() => removeItem(item.id)} aria-label="remove item" style={{ padding: '6px 8px' }}>
+                <i className="ti ti-x" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
         ))}
@@ -102,7 +101,7 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
 
       <div className="row" style={{ marginTop: 16, borderTop: '1px dashed var(--border)', paddingTop: 12 }}>
         <span style={{ fontSize: 14, fontWeight: 700 }}>total</span>
-        <span style={{ fontSize: 14, fontWeight: 700 }}>{grandTotal.toFixed(2)}</span>
+        <span style={{ fontSize: 14, fontWeight: 700 }}>&#8377;{grandTotal.toFixed(2)}</span>
       </div>
 
       <div className="actions">

@@ -79,6 +79,10 @@ export default {
         }
       );
 
+      if (geminiRes.status === 429) {
+        return jsonResponse({ error: 'quota_exceeded' }, 429);
+      }
+
       if (!geminiRes.ok) {
         const errText = await geminiRes.text();
         return jsonResponse({ error: 'vision api error', detail: errText }, 502);

@@ -9,6 +9,12 @@ import Results from './components/Results';
 
 const SCREENS = ['upload', 'scanning', 'review', 'people', 'assign', 'tax', 'results'];
 
+function errorMessage(err) {
+  if (err.code === 'not_a_bill') return "that doesn't look like a bill.";
+  if (err.code === 'quota_exceeded') return "we've scanned too many bills for today. give it a bit.";
+  return err.message || 'something went wrong scanning that bill';
+}
+
 function App() {
   const [screenIndex, setScreenIndex] = useState(0);
   const [image, setImage] = useState(null);
@@ -60,11 +66,7 @@ function App() {
           }}
           onError={(err) => {
             setScanErrorCode(err.code || null);
-            setScanError(
-              err.code === 'not_a_bill'
-                ? "we don't think that's a bill. oops if it is."
-                : err.message || 'something went wrong scanning that bill'
-            );
+            setScanError(errorMessage(err));
             goTo('upload');
           }}
         />

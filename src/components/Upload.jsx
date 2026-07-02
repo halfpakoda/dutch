@@ -26,9 +26,15 @@ export default function Upload({ onImageReady, scanError, scanErrorCode }) {
           <div style={{ fontSize: 13, color: '#a32d2d' }}>{scanError}</div>
           {scanErrorCode === 'not_a_bill' && (
             <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 8, lineHeight: 1.6 }}>
-              if it is one, try cropping it so it's just the bill, then upload again.
+              if it is, crop it down to just the receipt and try again.
               <br />
-              if nothing works... looks like you're doing the math yourself this time.
+              still stuck? time to do the math yourself.
+            </div>
+          )}
+          {scanErrorCode === 'quota_exceeded' && (
+            <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 8, lineHeight: 1.6 }}>
+              the free scanning quota resets daily. try again later, or just
+              add the items by hand this once.
             </div>
           )}
         </div>
