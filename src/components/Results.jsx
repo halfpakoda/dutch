@@ -59,41 +59,39 @@ export default function Results({ items, people, charges, onReset }) {
 
       <div ref={cardRef} className="card" style={{ padding: 0 }}>
         {results.map((r, i) => (
-          <div
-            key={r.id}
-            style={{
-              borderBottom: i < results.length - 1 ? '1px dashed var(--border-dashed)' : 'none',
-              padding: '12px 14px',
-            }}
-          >
-            <div className="row">
-              <span style={{ fontSize: 13 }}>
-                <i className="ti ti-circle-filled" style={{ fontSize: 8, marginRight: 6 }} aria-hidden="true"></i>
-                {r.name}
-              </span>
-              <span style={{ fontSize: 13 }}>{round2(r.total).toFixed(2)}</span>
+          <div key={r.id}>
+            <div style={{ padding: '12px 14px' }}>
+              <div className="row">
+                <span style={{ fontSize: 13 }}>
+                  <i className="ti ti-circle-filled" style={{ fontSize: 8, marginRight: 6 }} aria-hidden="true"></i>
+                  {r.name}
+                </span>
+                <span style={{ fontSize: 13 }}>{round2(r.total).toFixed(2)}</span>
+              </div>
+              <div style={{ marginTop: 8, paddingLeft: 14, fontSize: 10, color: 'var(--ink-soft)' }}>
+                {r.breakdown.map((b, idx) => (
+                  <div key={idx} className="row" style={{ marginBottom: 2 }}>
+                    <span>{b.name}</span>
+                    <span>{round2(b.amount).toFixed(2)}</span>
+                  </div>
+                ))}
+                {r.chargesTotal > 0 && (
+                  <div className="row">
+                    <span>tax &amp; charges</span>
+                    <span>{round2(r.chargesTotal).toFixed(2)}</span>
+                  </div>
+                )}
+              </div>
             </div>
-            <div style={{ marginTop: 8, paddingLeft: 14, fontSize: 10, color: 'var(--ink-soft)' }}>
-              {r.breakdown.map((b, idx) => (
-                <div key={idx} className="row" style={{ marginBottom: 2 }}>
-                  <span>{b.name}</span>
-                  <span>{round2(b.amount).toFixed(2)}</span>
-                </div>
-              ))}
-              {r.chargesTotal > 0 && (
-                <div className="row">
-                  <span>tax &amp; charges</span>
-                  <span>{round2(r.chargesTotal).toFixed(2)}</span>
-                </div>
-              )}
-            </div>
+            <div style={{ borderTop: '1px dashed var(--border-dashed)', margin: '0 14px' }} />
           </div>
         ))}
-      </div>
-
-      <div className="row" style={{ marginTop: 16, borderTop: '1px dashed var(--border)', paddingTop: 12 }}>
-        <span style={{ fontSize: 14, fontWeight: 700 }}>total</span>
-        <span style={{ fontSize: 14, fontWeight: 700 }}>{grandTotal.toFixed(2)}</span>
+        <div style={{ padding: '12px 14px' }}>
+          <div className="row">
+            <span style={{ fontSize: 14, fontWeight: 700 }}>total</span>
+            <span style={{ fontSize: 14, fontWeight: 700 }}>{grandTotal.toFixed(2)}</span>
+          </div>
+        </div>
       </div>
 
       <div className="actions">

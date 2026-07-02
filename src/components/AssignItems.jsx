@@ -48,64 +48,63 @@ export default function AssignItems({ items, people, onChange, onNext, onBack })
         {localItems.map((item, i) => {
           const isOpen = expandedId === item.id;
           return (
-            <div
-              key={item.id}
-              style={{
-                borderBottom: i < localItems.length - 1 ? '1px dashed var(--border-dashed)' : 'none',
-                padding: '12px 14px',
-              }}
-            >
-              <div
-                className="row"
-                style={{ cursor: 'pointer' }}
-                onClick={() => toggleExpand(item.id)}
-              >
-                <div>
-                  <div style={{ fontSize: 13 }}>
-                    {item.sharedBy.length === 0 && (
-                      <span style={{ color: '#a32d2d', marginRight: 4 }}>*</span>
-                    )}
-                    {item.name} {item.qty > 1 ? `x${item.qty}` : ''}
-                  </div>
-                  {item.sharedBy.length > 0 && (
-                    <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 3 }}>
-                      {item.sharedBy.map(nameFor).join(', ')}
+            <div key={item.id}>
+              <div style={{ padding: '12px 14px' }}>
+                <div
+                  className="row"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => toggleExpand(item.id)}
+                >
+                  <div>
+                    <div style={{ fontSize: 13 }}>
+                      {item.sharedBy.length === 0 && (
+                        <span style={{ color: '#a32d2d', marginRight: 4 }}>*</span>
+                      )}
+                      {item.name} {item.qty > 1 ? `x${item.qty}` : ''}
                     </div>
-                  )}
+                    {item.sharedBy.length > 0 && (
+                      <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 3 }}>
+                        {item.sharedBy.map(nameFor).join(', ')}
+                      </div>
+                    )}
+                  </div>
+                  <div className="row" style={{ gap: 8 }}>
+                    <span style={{ fontSize: 12 }}>
+                      {(item.price * (item.qty || 1)).toFixed(2)}
+                    </span>
+                    <i
+                      className={`ti ti-chevron-${isOpen ? 'up' : 'down'}`}
+                      aria-hidden="true"
+                      style={{ fontSize: 14 }}
+                    ></i>
+                  </div>
                 </div>
-                <div className="row" style={{ gap: 8 }}>
-                  <span style={{ fontSize: 12 }}>
-                    {(item.price * (item.qty || 1)).toFixed(2)}
-                  </span>
-                  <i
-                    className={`ti ti-chevron-${isOpen ? 'up' : 'down'}`}
-                    aria-hidden="true"
-                    style={{ fontSize: 14 }}
-                  ></i>
-                </div>
-              </div>
 
-              {isOpen && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
-                  {people.map((p) => {
-                    const active = item.sharedBy.includes(p.id);
-                    return (
-                      <button
-                        key={p.id}
-                        onClick={() => togglePerson(item.id, p.id)}
-                        style={{
-                          fontSize: 11,
-                          padding: '6px 10px',
-                          background: active ? 'var(--ink)' : 'var(--paper)',
-                          color: active ? 'var(--paper)' : 'var(--ink)',
-                          borderRadius: 20,
-                        }}
-                      >
-                        {p.name}
-                      </button>
-                    );
-                  })}
-                </div>
+                {isOpen && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+                    {people.map((p) => {
+                      const active = item.sharedBy.includes(p.id);
+                      return (
+                        <button
+                          key={p.id}
+                          onClick={() => togglePerson(item.id, p.id)}
+                          style={{
+                            fontSize: 11,
+                            padding: '6px 10px',
+                            background: active ? 'var(--ink)' : 'var(--paper)',
+                            color: active ? 'var(--paper)' : 'var(--ink)',
+                            borderRadius: 20,
+                          }}
+                        >
+                          {p.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              {i < localItems.length - 1 && (
+                <div style={{ borderTop: '1px dashed var(--border-dashed)', margin: '0 14px' }} />
               )}
             </div>
           );
