@@ -16,6 +16,7 @@ function App() {
   const [charges, setCharges] = useState([]);
   const [people, setPeople] = useState([]);
   const [scanError, setScanError] = useState(null);
+  const [scanErrorCode, setScanErrorCode] = useState(null);
 
   const screen = SCREENS[screenIndex];
   const goTo = (name) => setScreenIndex(SCREENS.indexOf(name));
@@ -26,6 +27,7 @@ function App() {
     setCharges([]);
     setPeople([]);
     setScanError(null);
+    setScanErrorCode(null);
     setScreenIndex(0);
   };
 
@@ -40,8 +42,11 @@ function App() {
           onImageReady={(img) => {
             setImage(img);
             setScanError(null);
+            setScanErrorCode(null);
             goTo('scanning');
           }}
+          scanError={scanError}
+          scanErrorCode={scanErrorCode}
         />
       )}
 
@@ -54,7 +59,12 @@ function App() {
             goTo('review');
           }}
           onError={(err) => {
-            setScanError(err.message || 'something went wrong scanning that bill');
+            setScanErrorCode(err.code || null);
+            setScanError(
+              err.code === 'not_a_bill'
+                ? "that's not a bill. or it's the world's most abstract bill."
+                : err.message || 'something went wrong scanning that bill'
+            );
             goTo('upload');
           }}
         />
@@ -104,12 +114,6 @@ function App() {
 
       {screen === 'results' && (
         <Results items={items} people={people} charges={charges} onReset={reset} />
-      )}
-
-      {scanError && screen === 'upload' && (
-        <div style={{ fontSize: 11, color: '#a32d2d', marginTop: 12, textAlign: 'center' }}>
-          {scanError}
-        </div>
       )}
     </>
   );

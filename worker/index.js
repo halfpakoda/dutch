@@ -5,14 +5,34 @@
 const ALLOWED_ORIGIN = '*'; // tighten to your github pages origin once deployed
 
 const SYSTEM_PROMPT = `you read restaurant/bar bill photos and extract structured data.
-return only valid json, no markdown, no commentary, in this exact shape:
+return only valid json, no markdown, no commentary.
+
+if the image is not a restaurant/bar/cafe bill or receipt, return exactly:
+{"error": "not_a_bill"}
+
+otherwise return json in this exact shape:
 {
   "items": [{"name": "string", "price": number, "qty": number}],
   "charges": [{"name": "string", "amount": number}]
 }
 "items" are individual food/drink line items with their unit price and quantity.
+"price" is the unit price for one qty (not the line total).
 "charges" are bill-level extras like tax, service charge, delivery fee (positive numbers)
 or discounts (negative numbers). do not include the items themselves in charges.
+
+important - reading the item table correctly:
+- item names sometimes wrap onto a second printed line because they're too long for
+  the column (e.g. "budweiser premium mug" printed as "budweiser" then "premium mug"
+  on the next line). a wrapped continuation line has no qty/price/amount of its own -
+  it belongs to the item above it. do not treat a name-only line as a separate item,
+  and do not let it shift the qty/price/amount values of later rows.
+- match each item name to the qty/price/amount that appears on the same visual row,
+  not the next available numbers in sequence.
+- after extracting all items, check your work: sum(price * qty) for all items, plus
+  all charges, should be close to the bill's printed subtotal/grand total. if it's
+  off, you've likely misaligned a row - re-examine the image and fix it before
+  returning your answer.
+
 if a field is illegible, make your best guess. never include any text outside the json object.`;
 
 export default {
@@ -67,6 +87,10 @@ export default {
       const geminiData = await geminiRes.json();
       const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
       const parsed = JSON.parse(text);
+
+      if (parsed.error === 'not_a_bill') {
+        return jsonResponse({ error: 'not_a_bill' }, 422);
+      }
 
       return jsonResponse(parsed, 200);
     } catch (err) {

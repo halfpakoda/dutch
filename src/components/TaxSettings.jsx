@@ -1,22 +1,23 @@
 import { useState } from 'react';
 
 export default function TaxSettings({ charges, onChange, onNext, onBack }) {
-  const [localCharges, setLocalCharges] = useState(charges);
+  const [charge, setCharge] = useState(
+    charges[0] || { id: `charge-${Date.now()}`, name: 'taxes & charges', amount: 0, splitMode: 'proportional' }
+  );
 
-  const setMode = (id, mode) => {
-    setLocalCharges((prev) => prev.map((c) => (c.id === id ? { ...c, splitMode: mode } : c)));
+  const setMode = (mode) => {
+    setCharge((prev) => ({ ...prev, splitMode: mode }));
   };
 
   const handleNext = () => {
-    onChange(localCharges);
+    onChange(charge.amount > 0 ? [charge] : []);
     onNext();
   };
 
-  if (localCharges.length === 0) {
+  if (!charge.amount) {
     return (
       <div>
-        <div className="screen-title">tax &amp; charges</div>
-        <div className="screen-sub">no extra charges on this bill</div>
+        <div className="screen-title" style={{ marginBottom: 16 }}>no extra charges on this bill</div>
         <div className="actions">
           <button onClick={onBack}>back</button>
           <button className="primary" onClick={handleNext}>
@@ -29,49 +30,37 @@ export default function TaxSettings({ charges, onChange, onNext, onBack }) {
 
   return (
     <div>
-      <div className="screen-title">tax &amp; charges</div>
-      <div className="screen-sub">how should these be split</div>
+      <div className="screen-title" style={{ marginBottom: 16 }}>how should taxes &amp; charges be split</div>
 
       <div className="card">
-        {localCharges.map((charge, i) => (
-          <div
-            key={charge.id}
+        <div className="row" style={{ marginBottom: 10 }}>
+          <span style={{ fontSize: 13 }}>taxes &amp; charges</span>
+          <span style={{ fontSize: 13 }}>{Number(charge.amount).toFixed(2)}</span>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            onClick={() => setMode('proportional')}
             style={{
-              marginBottom: i < localCharges.length - 1 ? 16 : 0,
-              paddingBottom: i < localCharges.length - 1 ? 16 : 0,
-              borderBottom: i < localCharges.length - 1 ? '1px dashed var(--border-dashed)' : 'none',
+              flex: 1,
+              fontSize: 11,
+              background: charge.splitMode === 'proportional' ? 'var(--ink)' : 'var(--paper)',
+              color: charge.splitMode === 'proportional' ? 'var(--paper)' : 'var(--ink)',
             }}
           >
-            <div className="row" style={{ marginBottom: 10 }}>
-              <span style={{ fontSize: 13 }}>{charge.name || 'charge'}</span>
-              <span style={{ fontSize: 13 }}>{Number(charge.amount).toFixed(2)}</span>
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button
-                onClick={() => setMode(charge.id, 'proportional')}
-                style={{
-                  flex: 1,
-                  fontSize: 11,
-                  background: charge.splitMode === 'proportional' ? 'var(--ink)' : 'var(--paper)',
-                  color: charge.splitMode === 'proportional' ? 'var(--paper)' : 'var(--ink)',
-                }}
-              >
-                proportional
-              </button>
-              <button
-                onClick={() => setMode(charge.id, 'equal')}
-                style={{
-                  flex: 1,
-                  fontSize: 11,
-                  background: charge.splitMode === 'equal' ? 'var(--ink)' : 'var(--paper)',
-                  color: charge.splitMode === 'equal' ? 'var(--paper)' : 'var(--ink)',
-                }}
-              >
-                equal
-              </button>
-            </div>
-          </div>
-        ))}
+            proportional
+          </button>
+          <button
+            onClick={() => setMode('equal')}
+            style={{
+              flex: 1,
+              fontSize: 11,
+              background: charge.splitMode === 'equal' ? 'var(--ink)' : 'var(--paper)',
+              color: charge.splitMode === 'equal' ? 'var(--paper)' : 'var(--ink)',
+            }}
+          >
+            equal
+          </button>
+        </div>
       </div>
 
       <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 10, lineHeight: 1.6 }}>

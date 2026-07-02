@@ -3,6 +3,13 @@
 // set VITE_WORKER_URL in a .env file to point at your deployed worker.
 const WORKER_URL = import.meta.env.VITE_WORKER_URL || 'http://localhost:8787';
 
+// bills often itemize tax into several lines (cgst, sgst, service charge...)
+// nobody needs that granularity here, so collapse them into one number.
+function mergeCharges(rawCharges) {
+  const total = rawCharges.reduce((sum, c) => sum + (c.amount || 0), 0);
+  return [{ id: `charge-${Date.now()}`, name: 'taxes & charges', amount: total, splitMode: 'proportional' }];
+}
+
 export async function scanBill(imageDataUrl) {
   if (import.meta.env.VITE_MOCK_OCR === 'true') {
     await new Promise((r) => setTimeout(r, 1500));
@@ -13,10 +20,10 @@ export async function scanBill(imageDataUrl) {
         { id: 'm3', name: 'naan', price: 60, qty: 4, sharedBy: [] },
         { id: 'm4', name: 'biryani', price: 320, qty: 1, sharedBy: [] },
       ],
-      charges: [
-        { id: 'c1', name: 'tax', amount: 143, splitMode: 'proportional' },
-        { id: 'c2', name: 'service charge', amount: 100, splitMode: 'proportional' },
-      ],
+      charges: mergeCharges([
+        { name: 'tax', amount: 143 },
+        { name: 'service charge', amount: 100 },
+      ]),
     };
   }
   const res = await fetch(`${WORKER_URL}/scan`, {
@@ -24,6 +31,12 @@ export async function scanBill(imageDataUrl) {
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ image: imageDataUrl }),
   });
+
+  if (res.status === 422) {
+    const err = new Error('not_a_bill');
+    err.code = 'not_a_bill';
+    throw err;
+  }
 
   if (!res.ok) {
     const text = await res.text().catch(() => '');
@@ -40,12 +53,7 @@ export async function scanBill(imageDataUrl) {
     sharedBy: [],
   }));
 
-  const charges = (data.charges || []).map((charge, i) => ({
-    id: `charge-${i}-${Date.now()}`,
-    name: charge.name,
-    amount: charge.amount,
-    splitMode: 'proportional',
-  }));
+  const charges = mergeCharges(data.charges || []);
 
   return { items, charges };
 }

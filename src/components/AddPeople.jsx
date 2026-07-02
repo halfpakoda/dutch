@@ -32,7 +32,7 @@ export default function AddPeople({ people, onChange, onNext, onBack }) {
 
   return (
     <div>
-      <div className="screen-title" style={{ marginBottom: 16 }}>add people splitting this bill</div>
+      <div className="screen-title" style={{ marginBottom: 16 }}>add people</div>
 
       <div className="card">
         <form onSubmit={handleSubmit}>

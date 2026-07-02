@@ -22,21 +22,10 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
     setLocalItems((prev) => [...prev, { id: nextId(), name: '', price: 0, qty: 1, sharedBy: [] }]);
   };
 
-  const updateCharge = (id, field, value) => {
-    setLocalCharges((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, [field]: value } : c))
-    );
-  };
+  const charge = localCharges[0] || { id: nextId(), name: 'taxes & charges', amount: 0, splitMode: 'proportional' };
 
-  const removeCharge = (id) => {
-    setLocalCharges((prev) => prev.filter((c) => c.id !== id));
-  };
-
-  const addCharge = () => {
-    setLocalCharges((prev) => [
-      ...prev,
-      { id: nextId(), name: '', amount: 0, splitMode: 'proportional' },
-    ]);
+  const updateChargeAmount = (value) => {
+    setLocalCharges([{ ...charge, amount: value }]);
   };
 
   const handleNext = () => {
@@ -88,33 +77,16 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
         </button>
       </div>
 
-      <div style={{ fontSize: 11, color: 'var(--ink-soft)', margin: '16px 0 6px', letterSpacing: 1 }}>
-        tax &amp; other charges
-      </div>
-      <div className="card">
-        {localCharges.map((charge) => (
-          <div key={charge.id} className="row" style={{ gap: 8, marginBottom: 10 }}>
-            <input
-              type="text"
-              value={charge.name}
-              placeholder="charge name"
-              onChange={(e) => updateCharge(charge.id, 'name', e.target.value)}
-              style={{ flex: 1 }}
-            />
-            <input
-              type="number"
-              value={charge.amount}
-              onChange={(e) => updateCharge(charge.id, 'amount', Number(e.target.value))}
-              style={{ width: 72 }}
-            />
-            <button onClick={() => removeCharge(charge.id)} aria-label="remove charge" style={{ padding: '6px 8px' }}>
-              <i className="ti ti-x" aria-hidden="true"></i>
-            </button>
-          </div>
-        ))}
-        <button onClick={addCharge} style={{ width: '100%' }}>
-          <i className="ti ti-plus" aria-hidden="true"></i> add charge
-        </button>
+      <div className="card" style={{ marginTop: 16 }}>
+        <div className="row" style={{ gap: 8 }}>
+          <span style={{ fontSize: 13 }}>taxes &amp; charges</span>
+          <input
+            type="number"
+            value={charge.amount}
+            onChange={(e) => updateChargeAmount(Number(e.target.value))}
+            style={{ width: 96 }}
+          />
+        </div>
       </div>
 
       <div className="actions">

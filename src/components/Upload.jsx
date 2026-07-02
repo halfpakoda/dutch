@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-export default function Upload({ onImageReady }) {
+export default function Upload({ onImageReady, scanError, scanErrorCode }) {
   const galleryInput = useRef(null);
   const cameraInput = useRef(null);
 
@@ -14,6 +14,24 @@ export default function Upload({ onImageReady }) {
 
   return (
     <div>
+      {scanError && (
+        <div
+          className="card"
+          style={{
+            marginBottom: 16,
+            borderColor: '#a32d2d',
+            textAlign: 'center',
+          }}
+        >
+          <div style={{ fontSize: 13, color: '#a32d2d' }}>{scanError}</div>
+          {scanErrorCode === 'not_a_bill' && (
+            <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 8 }}>
+              tip: crop the photo so it's just the bill, then try again
+            </div>
+          )}
+        </div>
+      )}
+
       <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
         <button
           className="primary"
