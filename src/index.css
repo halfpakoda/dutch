@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+
+:root {
+  --paper: #f6f1e7;
+  --paper-raised: #fbf8f1;
+  --ink: #323232;
+  --ink-soft: #6b6b6b;
+  --ink-faint: #a3a3a3;
+  --border: #323232;
+  --border-dashed: #b8b0a0;
+  --radius: 3px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: 'Courier Prime', 'Courier New', monospace;
+  text-transform: lowercase;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+#root {
+  max-width: 460px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 24px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+button, input, select, textarea {
+  font-family: 'Courier Prime', 'Courier New', monospace;
+  text-transform: lowercase;
+  color: var(--ink);
+}
+
+button {
+  cursor: pointer;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button.primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+input[type="text"], input[type="number"] {
+  background: var(--paper-raised);
+  border: 1px solid var(--border-dashed);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  font-size: 13px;
+  width: 100%;
+}
+
+input:focus, button:focus, select:focus {
+  outline: 1px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header .brand {
+  font-size: 20px;
+  letter-spacing: 4px;
+  font-weight: 700;
+}
+
+.header .tagline {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+.card {
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px dashed var(--border);
+  margin: 16px 0;
+}
+
+.stub-line {
+  text-align: center;
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 1px;
+  margin-top: 20px;
+}
+
+.screen-title {
+  font-size: 15px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.screen-sub {
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.actions button {
+  flex: 1;
+}
