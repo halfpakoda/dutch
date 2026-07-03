@@ -78,6 +78,16 @@ input[type="text"], input[type="number"] {
   width: 100%;
 }
 
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 input:focus, button:focus, select:focus {
   outline: 1px solid var(--ink);
   outline-offset: 1px;
@@ -159,4 +169,24 @@ input:focus, button:focus, select:focus {
 
 .actions button {
   flex: 1;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(50, 50, 50, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+
+.modal-sheet {
+  background: var(--paper-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  width: 100%;
+  max-width: 340px;
 }

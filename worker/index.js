@@ -16,9 +16,23 @@ otherwise return json in this exact shape:
   "charges": [{"name": "string", "amount": number}]
 }
 "items" are individual food/drink line items with their unit price and quantity.
-"price" is the unit price for one qty (not the line total).
 "charges" are bill-level extras like tax, service charge, delivery fee (positive numbers)
 or discounts (negative numbers). do not include the items themselves in charges.
+
+important - getting "price" right (price * qty must reconstruct the right line amount):
+- bills print a "rate"/unit-price column and, often, a separate "amount"/"total"
+  column for the same row. use whichever one is the PRE-TAX line amount - "price"
+  should never have any tax or service charge baked into it, because all tax and
+  service charge lines are already captured separately in "charges", and including
+  them in both places would double-count them.
+- almost always this means "price" = the plain "rate" column, and price * qty
+  should equal rate * qty. if the printed row "amount" differs from rate * qty by
+  roughly the bill's overall tax percentage (e.g. row amount ≈ rate * qty * 1.05
+  when there's 2.5% CGST + 2.5% SGST), that's tax baked into the row amount - use
+  rate * qty instead of the row amount.
+- only fall back to (row amount / qty) when the row amount differs from rate * qty
+  for a reason that has nothing to do with tax (e.g. a genuine per-row rounding
+  quirk, or the bill has no separate tax/charge lines at all).
 
 important - reading the charges section correctly:
 - bills often list several charge lines between the items table and the grand total,
@@ -43,6 +57,10 @@ important - reading the item table correctly:
   and do not let it shift the qty/price/amount values of later rows.
 - match each item name to the qty/price/amount that appears on the same visual row,
   not the next available numbers in sequence.
+- before finalizing, count the number of distinct item rows (by name) and the
+  number of qty/rate/amount entries in the table - they should be equal, one set
+  per row. if they don't match 1:1, you've likely merged two rows together or
+  split one row into two - recount directly from the image and fix it.
 - after extracting all items, check your work: sum(price * qty) for all items, plus
   all charges, should be close to the bill's printed subtotal/grand total. if it's
   off, you've likely misaligned a row - re-examine the image and fix it before

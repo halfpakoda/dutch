@@ -59,13 +59,31 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
             key={item.id}
             style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}
           >
-            <input
-              type="text"
-              value={item.name}
-              placeholder="item name"
-              onChange={(e) => updateItem(item.id, 'name', e.target.value)}
-              style={{ flex: '1 1 auto', minWidth: 0 }}
-            />
+            <div style={{ position: 'relative', flex: '1 1 auto', minWidth: 0 }}>
+              <input
+                type="text"
+                value={item.name}
+                placeholder="item name"
+                onChange={(e) => updateItem(item.id, 'name', e.target.value)}
+                style={{ width: '100%', paddingRight: item.qty > 1 ? 36 : undefined }}
+              />
+              {item.qty > 1 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    right: 8,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    fontSize: 11,
+                    color: 'var(--ink-soft)',
+                    background: 'var(--paper-raised)',
+                    pointerEvents: 'none',
+                  }}
+                >
+                  &times;{item.qty}
+                </span>
+              )}
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '0 0 auto', whiteSpace: 'nowrap' }}>
               <div style={{ position: 'relative' }}>
                 <span
@@ -83,6 +101,7 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
                 </span>
                 <input
                   type="number"
+                  inputMode="decimal"
                   value={item.price * (item.qty || 1)}
                   onChange={(e) => updateLineTotal(item.id, Number(e.target.value))}
                   style={{ width: 80, paddingLeft: 22 }}
@@ -104,6 +123,7 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
           <span style={{ fontSize: 13 }}>taxes &amp; charges</span>
           <input
             type="number"
+            inputMode="decimal"
             value={charge.amount}
             onChange={(e) => updateChargeAmount(Number(e.target.value))}
             style={{ width: 96 }}

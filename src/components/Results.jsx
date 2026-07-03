@@ -95,16 +95,14 @@ export default function Results({ items, people, charges, onBack }) {
       </div>
 
       <div className="actions">
-        <button className="primary" onClick={handleShareImage}>
-          <i className="ti ti-share" aria-hidden="true"></i> share image
-        </button>
+        <button onClick={onBack}>back</button>
         <button onClick={handleCopyText}>
           <i className="ti ti-copy" aria-hidden="true"></i> {copyLabel}
         </button>
       </div>
       <div className="actions">
-        <button onClick={onBack}>
-          <i className="ti ti-arrow-left" aria-hidden="true"></i> back
+        <button className="primary" onClick={handleShareImage} style={{ width: '100%' }}>
+          <i className="ti ti-share" aria-hidden="true"></i> share image
         </button>
       </div>
 

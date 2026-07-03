@@ -6,6 +6,7 @@ import AddPeople from './components/AddPeople';
 import AssignItems from './components/AssignItems';
 import TaxSettings from './components/TaxSettings';
 import Results from './components/Results';
+import ConfirmModal from './components/ConfirmModal';
 
 const SCREENS = ['upload', 'scanning', 'review', 'people', 'assign', 'tax', 'results'];
 
@@ -23,6 +24,7 @@ function App() {
   const [people, setPeople] = useState([]);
   const [scanError, setScanError] = useState(null);
   const [scanErrorCode, setScanErrorCode] = useState(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const screen = SCREENS[screenIndex];
   const goTo = (name) => setScreenIndex(SCREENS.indexOf(name));
@@ -37,10 +39,9 @@ function App() {
     setScreenIndex(0);
   };
 
-  const handleResetClick = () => {
-    if (window.confirm('start over? this clears the current bill and split.')) {
-      reset();
-    }
+  const handleResetConfirm = () => {
+    setShowResetConfirm(false);
+    reset();
   };
 
   return (
@@ -50,13 +51,23 @@ function App() {
         {screen !== 'upload' && (
           <button
             className="reset-button"
-            onClick={handleResetClick}
+            onClick={() => setShowResetConfirm(true)}
             aria-label="start over"
           >
             <i className="ti ti-refresh" aria-hidden="true"></i>
           </button>
         )}
       </div>
+
+      {showResetConfirm && (
+        <ConfirmModal
+          message="are you sure you want to start over?"
+          confirmLabel="yes"
+          cancelLabel="cancel"
+          onConfirm={handleResetConfirm}
+          onCancel={() => setShowResetConfirm(false)}
+        />
+      )}
 
       {screen === 'upload' && (
         <Upload
