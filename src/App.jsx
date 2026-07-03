@@ -11,7 +11,7 @@ const SCREENS = ['upload', 'scanning', 'review', 'people', 'assign', 'tax', 'res
 
 function errorMessage(err) {
   if (err.code === 'not_a_bill') return "that doesn't look like a bill.";
-  if (err.code === 'quota_exceeded') return "we've scanned too many bills for today. give it a bit.";
+  if (err.code === 'quota_exceeded') return "oops, i haven't paid my bills.";
   return err.message || 'something went wrong scanning that bill';
 }
 

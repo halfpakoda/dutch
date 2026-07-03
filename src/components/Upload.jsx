@@ -40,8 +40,8 @@ export default function Upload({ onImageReady, scanError, scanErrorCode }) {
           )}
           {scanErrorCode === 'quota_exceeded' && (
             <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 8, lineHeight: 1.6 }}>
-              the free scanning quota resets daily. try again later, or just
-              add the items by hand this once.
+              if you know who i am, pls reach out to me. else, time to do
+              the maths yourself.
             </div>
           )}
         </div>
