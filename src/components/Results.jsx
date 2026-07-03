@@ -11,7 +11,7 @@ export default function Results({ items, people, charges, onBack }) {
   const summaryText = () => {
     const lines = [
       'dutch.',
-      `split between ${people.length} people · ${round2(grandTotal).toFixed(2)} total`,
+      `split between ${people.length} people`,
       '- - - - - - - - - - - - - - -',
       '',
     ];
