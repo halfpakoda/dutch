@@ -1,15 +1,22 @@
 import { useRef } from 'react';
+import { preprocessImage } from '../lib/image';
 
 export default function Upload({ onImageReady, scanError, scanErrorCode }) {
   const galleryInput = useRef(null);
   const cameraInput = useRef(null);
 
-  const handleFile = (e) => {
+  const handleFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => onImageReady(reader.result);
-    reader.readAsDataURL(file);
+    try {
+      const dataUrl = await preprocessImage(file);
+      onImageReady(dataUrl);
+    } catch {
+      // fall back to the raw file if the browser can't decode/resize it
+      const reader = new FileReader();
+      reader.onload = () => onImageReady(reader.result);
+      reader.readAsDataURL(file);
+    }
   };
 
   return (

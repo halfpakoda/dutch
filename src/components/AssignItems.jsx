@@ -85,25 +85,35 @@ export default function AssignItems({ items, people, charges, onChange, onNext, 
                 </div>
 
                 {isOpen && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
-                    {people.map((p) => {
-                      const active = item.sharedBy.includes(p.id);
-                      return (
-                        <button
-                          key={p.id}
-                          onClick={() => togglePerson(item.id, p.id)}
-                          style={{
-                            fontSize: 11,
-                            padding: '6px 10px',
-                            background: active ? 'var(--ink)' : 'var(--paper)',
-                            color: active ? 'var(--paper)' : 'var(--ink)',
-                            borderRadius: 20,
-                          }}
-                        >
-                          {p.name}
-                        </button>
-                      );
-                    })}
+                  <div style={{ marginTop: 12 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                      {people.map((p) => {
+                        const active = item.sharedBy.includes(p.id);
+                        return (
+                          <button
+                            key={p.id}
+                            onClick={() => togglePerson(item.id, p.id)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 5,
+                              fontSize: 11,
+                              padding: '6px 10px',
+                              background: active ? 'var(--ink)' : 'var(--paper)',
+                              color: active ? 'var(--paper)' : 'var(--ink)',
+                              borderRadius: 20,
+                            }}
+                          >
+                            <i
+                              className={`ti ti-${active ? 'check' : 'plus'}`}
+                              aria-hidden="true"
+                              style={{ fontSize: 12 }}
+                            ></i>
+                            {p.name}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>

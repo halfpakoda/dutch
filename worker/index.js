@@ -74,7 +74,41 @@ export default {
                 ],
               },
             ],
-            generationConfig: { responseMimeType: 'application/json' },
+            generationConfig: {
+              responseMimeType: 'application/json',
+              temperature: 0,
+              topP: 0.1,
+              topK: 1,
+              responseSchema: {
+                type: 'object',
+                properties: {
+                  error: { type: 'string' },
+                  items: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        name: { type: 'string' },
+                        price: { type: 'number' },
+                        qty: { type: 'number' },
+                      },
+                      required: ['name', 'price', 'qty'],
+                    },
+                  },
+                  charges: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        name: { type: 'string' },
+                        amount: { type: 'number' },
+                      },
+                      required: ['name', 'amount'],
+                    },
+                  },
+                },
+              },
+            },
           }),
         }
       );

@@ -32,7 +32,8 @@ export default function AddPeople({ people, onChange, onNext, onBack }) {
 
   return (
     <div>
-      <div className="screen-title" style={{ marginBottom: 16 }}>add people</div>
+      <div className="screen-title" style={{ marginBottom: 4 }}>add people</div>
+      <div className="screen-sub" style={{ marginBottom: 16 }}>tap return to add</div>
 
       <div className="card">
         <form onSubmit={handleSubmit}>
@@ -40,7 +41,7 @@ export default function AddPeople({ people, onChange, onNext, onBack }) {
             ref={inputRef}
             type="text"
             value={draft}
-            placeholder="type a name, tap return"
+            placeholder="type a name"
             enterKeyHint="next"
             autoFocus
             onChange={(e) => setDraft(e.target.value)}
