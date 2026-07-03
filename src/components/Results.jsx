@@ -9,7 +9,12 @@ export default function Results({ items, people, charges, onBack }) {
   const [copyLabel, setCopyLabel] = useState('copy text');
 
   const summaryText = () => {
-    const lines = ['dutch. split summary', ''];
+    const lines = [
+      'dutch.',
+      `split between ${people.length} people · ${round2(grandTotal).toFixed(2)} total`,
+      '- - - - - - - - - - - - - - -',
+      '',
+    ];
     results.forEach((r) => {
       lines.push(`${r.name} - ${round2(r.total).toFixed(2)}`);
       r.breakdown.forEach((b) => {
@@ -20,6 +25,7 @@ export default function Results({ items, people, charges, onBack }) {
       }
       lines.push('');
     });
+    lines.push('- - - - - - - - - - - - - - -');
     lines.push(`total: ${grandTotal.toFixed(2)}`);
     return lines.join('\n');
   };
