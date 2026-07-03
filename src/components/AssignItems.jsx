@@ -107,12 +107,16 @@ export default function AssignItems({ items, people, charges, onChange, onNext, 
                   </div>
                 )}
               </div>
-              {i < localItems.length - 1 && (
-                <div style={{ borderTop: '1px dashed var(--border-dashed)', margin: '0 14px' }} />
-              )}
+              <div style={{ borderTop: '1px dashed var(--border-dashed)', margin: '0 14px' }} />
             </div>
           );
         })}
+        <div style={{ padding: '12px 14px' }}>
+          <div className="row">
+            <span style={{ fontSize: 14, fontWeight: 700 }}>total</span>
+            <span style={{ fontSize: 14, fontWeight: 700 }}>{grandTotal.toFixed(2)}</span>
+          </div>
+        </div>
       </div>
 
       {!allAssigned && (
@@ -120,11 +124,6 @@ export default function AssignItems({ items, people, charges, onChange, onNext, 
           * marked items still need someone
         </div>
       )}
-
-      <div className="row" style={{ marginTop: 16, borderTop: '1px dashed var(--border)', paddingTop: 12 }}>
-        <span style={{ fontSize: 14, fontWeight: 700 }}>total</span>
-        <span style={{ fontSize: 14, fontWeight: 700 }}>{grandTotal.toFixed(2)}</span>
-      </div>
 
       <div className="actions">
         <button onClick={onBack}>back</button>

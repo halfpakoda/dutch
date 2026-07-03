@@ -22,6 +22,12 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
     setLocalItems((prev) => [...prev, { id: nextId(), name: '', price: 0, qty: 1, sharedBy: [] }]);
   };
 
+  const updateLineTotal = (id, value) => {
+    setLocalItems((prev) =>
+      prev.map((it) => (it.id === id ? { ...it, price: value, qty: 1 } : it))
+    );
+  };
+
   const charge = localCharges[0] || { id: nextId(), name: 'taxes & charges', amount: 0, splitMode: 'proportional' };
 
   const updateChargeAmount = (value) => {
@@ -51,31 +57,37 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
         {localItems.map((item) => (
           <div
             key={item.id}
-            style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginBottom: 14 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}
           >
             <input
               type="text"
               value={item.name}
               placeholder="item name"
               onChange={(e) => updateItem(item.id, 'name', e.target.value)}
-              style={{ flex: '1 1 120px', minWidth: 0 }}
+              style={{ flex: '1 1 auto', minWidth: 0 }}
             />
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: '0 0 auto', whiteSpace: 'nowrap' }}>
-              <input
-                type="number"
-                value={item.qty}
-                min="1"
-                onChange={(e) => updateItem(item.id, 'qty', Number(e.target.value))}
-                style={{ width: 40 }}
-              />
-              <span style={{ fontSize: 12, color: 'var(--ink-soft)' }}>&times;</span>
-              <input
-                type="number"
-                value={item.price}
-                onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))}
-                style={{ width: 64 }}
-              />
-              <span style={{ fontSize: 13 }}>&#8377;{(item.price * (item.qty || 1)).toFixed(2)}</span>
+              <div style={{ position: 'relative' }}>
+                <span
+                  style={{
+                    position: 'absolute',
+                    left: 10,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    fontSize: 13,
+                    color: 'var(--ink-soft)',
+                    pointerEvents: 'none',
+                  }}
+                >
+                  &#8377;
+                </span>
+                <input
+                  type="number"
+                  value={item.price * (item.qty || 1)}
+                  onChange={(e) => updateLineTotal(item.id, Number(e.target.value))}
+                  style={{ width: 80, paddingLeft: 22 }}
+                />
+              </div>
               <button onClick={() => removeItem(item.id)} aria-label="remove item" style={{ padding: '6px 8px' }}>
                 <i className="ti ti-x" aria-hidden="true"></i>
               </button>
@@ -97,11 +109,10 @@ export default function ReviewItems({ items, charges, image, onChange, onNext, o
             style={{ width: 96 }}
           />
         </div>
-      </div>
-
-      <div className="row" style={{ marginTop: 16, borderTop: '1px dashed var(--border)', paddingTop: 12 }}>
-        <span style={{ fontSize: 14, fontWeight: 700 }}>total</span>
-        <span style={{ fontSize: 14, fontWeight: 700 }}>&#8377;{grandTotal.toFixed(2)}</span>
+        <div className="row" style={{ marginTop: 12, borderTop: '1px dashed var(--border-dashed)', paddingTop: 12 }}>
+          <span style={{ fontSize: 14, fontWeight: 700 }}>total</span>
+          <span style={{ fontSize: 14, fontWeight: 700 }}>&#8377;{grandTotal.toFixed(2)}</span>
+        </div>
       </div>
 
       <div className="actions">
