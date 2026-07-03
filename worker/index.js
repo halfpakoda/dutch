@@ -20,6 +20,21 @@ otherwise return json in this exact shape:
 "charges" are bill-level extras like tax, service charge, delivery fee (positive numbers)
 or discounts (negative numbers). do not include the items themselves in charges.
 
+important - reading the charges section correctly:
+- bills often list several charge lines between the items table and the grand total,
+  e.g. "Sub Total", "CGST", "SGST", "S.Tax" / "Service Tax", "VAT", "Service Charge",
+  "Cess", "Delivery Fee", "Discount". treat every one of these lines as its own
+  charge EXCEPT "Sub Total" (that's just the sum of items, not a charge) and any
+  "Total Qty" / "Grand Total" / final total line.
+- abbreviations like "S.Tax" or "S. Tax" mean "service tax" - a real charge line,
+  separate from "Sub Total". don't skip it and don't confuse the two because their
+  labels look similar.
+- include every distinct tax/charge line even if there are several (e.g. both CGST
+  and SGST, or CGST/SGST alongside a separate service tax) - do not merge them or
+  drop any of them.
+- the "charges" array is required in every response (except the not_a_bill case) -
+  include it even if it's empty. never omit the "charges" key.
+
 important - reading the item table correctly:
 - item names sometimes wrap onto a second printed line because they're too long for
   the column (e.g. "budweiser premium mug" printed as "budweiser" then "premium mug"
@@ -107,6 +122,7 @@ export default {
                     },
                   },
                 },
+                required: ['items', 'charges'],
               },
             },
           }),
