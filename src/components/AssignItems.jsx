@@ -32,9 +32,32 @@ export default function AssignItems({ items, people, charges, onChange, onNext, 
     );
   };
 
+  const countFor = (item, personId) => item.sharedBy.filter((id) => id === personId).length;
+
+  const cyclePersonCount = (itemId, personId) => {
+    setLocalItems((prev) =>
+      prev.map((item) => {
+        if (item.id !== itemId) return item;
+        const current = countFor(item, personId);
+        const remaining = item.qty - item.sharedBy.length + current;
+        const without = item.sharedBy.filter((id) => id !== personId);
+        const nextCount = current >= remaining ? 0 : current + 1;
+        return { ...item, sharedBy: Array(nextCount).fill(personId).concat(without) };
+      })
+    );
+  };
+
+  const setSplitMode = (itemId, mode) => {
+    setLocalItems((prev) =>
+      prev.map((item) => (item.id === itemId ? { ...item, splitByCount: mode === 'count', sharedBy: [] } : item))
+    );
+  };
+
   const nameFor = (id) => people.find((p) => p.id === id)?.name || '';
 
-  const allAssigned = localItems.every((item) => item.sharedBy.length > 0);
+  const allAssigned = localItems.every((item) =>
+    item.splitByCount ? item.sharedBy.length === item.qty : item.sharedBy.length > 0
+  );
 
   const handleNext = () => {
     onChange(localItems);
@@ -66,14 +89,19 @@ export default function AssignItems({ items, people, charges, onChange, onNext, 
                 >
                   <div>
                     <div style={{ fontSize: 13 }}>
-                      {item.sharedBy.length === 0 && (
+                      {(item.splitByCount ? item.sharedBy.length !== item.qty : item.sharedBy.length === 0) && (
                         <span style={{ color: '#a32d2d', marginRight: 4 }}>*</span>
                       )}
                       {item.name} {item.qty > 1 ? `x${item.qty}` : ''}
                     </div>
                     {item.sharedBy.length > 0 && (
                       <div style={{ fontSize: 10, color: 'var(--ink-soft)', marginTop: 3 }}>
-                        {item.sharedBy.map(nameFor).join(', ')}
+                        {item.splitByCount
+                          ? people
+                              .filter((p) => countFor(item, p.id) > 0)
+                              .map((p) => `${p.name} x${countFor(item, p.id)}`)
+                              .join(', ')
+                          : item.sharedBy.map(nameFor).join(', ')}
                       </div>
                     )}
                   </div>
@@ -91,34 +119,66 @@ export default function AssignItems({ items, people, charges, onChange, onNext, 
 
                 {isOpen && (
                   <div style={{ marginTop: 12 }}>
+                    {item.qty > 1 && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                        <div className="mode-switch">
+                          <button
+                            onClick={() => setSplitMode(item.id, 'equal')}
+                            className={!item.splitByCount ? 'selected' : ''}
+                            aria-label="split equally"
+                            title="split equally"
+                          >
+                            <i className="ti ti-equal" aria-hidden="true"></i>
+                          </button>
+                          <button
+                            onClick={() => setSplitMode(item.id, 'count')}
+                            className={item.splitByCount ? 'selected' : ''}
+                            aria-label="split by count"
+                            title="split by count"
+                          >
+                            <i className="ti ti-123" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                        <span style={{ fontSize: 10, color: 'var(--ink-soft)' }}>
+                          {item.splitByCount ? 'split by count' : 'split equally'}
+                        </span>
+                      </div>
+                    )}
+
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                       {people.map((p) => {
-                        const active = item.sharedBy.includes(p.id);
+                        const count = countFor(item, p.id);
+                        const active = item.splitByCount ? count > 0 : item.sharedBy.includes(p.id);
                         return (
                           <button
                             key={p.id}
-                            onClick={() => togglePerson(item.id, p.id)}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 5,
-                              fontSize: 11,
-                              padding: '6px 10px',
-                              background: active ? 'var(--ink)' : 'var(--paper)',
-                              color: active ? 'var(--paper)' : 'var(--ink)',
-                              borderRadius: 20,
-                            }}
+                            onClick={() =>
+                              item.splitByCount ? cyclePersonCount(item.id, p.id) : togglePerson(item.id, p.id)
+                            }
+                            className={active ? 'pill-option selected' : 'pill-option'}
                           >
                             <i
-                              className={`ti ti-${active ? 'check' : 'plus'}`}
+                              className={`ti ti-${active && !item.splitByCount ? 'check' : 'plus'}`}
                               aria-hidden="true"
                               style={{ fontSize: 12 }}
                             ></i>
-                            {p.name}
+                            {item.splitByCount && count > 0 ? `${p.name} x${count}` : p.name}
                           </button>
                         );
                       })}
                     </div>
+
+                    {item.splitByCount && (
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: item.sharedBy.length === item.qty ? 'var(--ink-soft)' : '#a32d2d',
+                          marginTop: 8,
+                        }}
+                      >
+                        {item.sharedBy.length} / {item.qty} assigned
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

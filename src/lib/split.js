@@ -13,10 +13,20 @@ export function computeSplit(items, people, charges) {
     const sharers = item.sharedBy || [];
     if (sharers.length === 0) return;
     const share = lineTotal / sharers.length;
+
+    const countByPerson = {};
     sharers.forEach((personId) => {
+      countByPerson[personId] = (countByPerson[personId] || 0) + 1;
+    });
+
+    Object.entries(countByPerson).forEach(([personId, count]) => {
       if (!perPerson[personId]) return;
-      perPerson[personId].itemsTotal += share;
-      perPerson[personId].breakdown.push({ name: item.name, amount: share });
+      const amount = share * count;
+      perPerson[personId].itemsTotal += amount;
+      perPerson[personId].breakdown.push({
+        name: count > 1 ? `${item.name} x${count}` : item.name,
+        amount,
+      });
     });
   });
 

@@ -40,24 +40,22 @@ export default function TaxSettings({ charges, onChange, onNext, onBack }) {
         <div style={{ display: 'flex', gap: 8 }}>
           <button
             onClick={() => setMode('proportional')}
-            style={{
-              flex: 1,
-              fontSize: 11,
-              background: charge.splitMode === 'proportional' ? 'var(--ink)' : 'var(--paper)',
-              color: charge.splitMode === 'proportional' ? 'var(--paper)' : 'var(--ink)',
-            }}
+            className={charge.splitMode === 'proportional' ? 'toggle-option selected' : 'toggle-option'}
+            style={{ flex: 1, fontSize: 11 }}
           >
+            {charge.splitMode === 'proportional' && (
+              <i className="ti ti-check" aria-hidden="true" style={{ marginRight: 4 }}></i>
+            )}
             proportional
           </button>
           <button
             onClick={() => setMode('equal')}
-            style={{
-              flex: 1,
-              fontSize: 11,
-              background: charge.splitMode === 'equal' ? 'var(--ink)' : 'var(--paper)',
-              color: charge.splitMode === 'equal' ? 'var(--paper)' : 'var(--ink)',
-            }}
+            className={charge.splitMode === 'equal' ? 'toggle-option selected' : 'toggle-option'}
+            style={{ flex: 1, fontSize: 11 }}
           >
+            {charge.splitMode === 'equal' && (
+              <i className="ti ti-check" aria-hidden="true" style={{ marginRight: 4 }}></i>
+            )}
             equal
           </button>
         </div>
