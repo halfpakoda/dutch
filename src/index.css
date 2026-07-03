@@ -84,6 +84,7 @@ input:focus, button:focus, select:focus {
 }
 
 .header {
+  position: relative;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -92,6 +93,15 @@ input:focus, button:focus, select:focus {
   font-size: 20px;
   letter-spacing: 4px;
   font-weight: 700;
+}
+
+.header .reset-button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 6px 8px;
+  font-size: 14px;
 }
 
 .header .tagline {

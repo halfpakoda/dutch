@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { computeSplit, round2 } from '../lib/split';
 
-export default function Results({ items, people, charges, onReset }) {
+export default function Results({ items, people, charges, onBack }) {
   const results = computeSplit(items, people, charges);
   const grandTotal = round2(results.reduce((sum, r) => sum + r.total, 0));
   const cardRef = useRef(null);
@@ -103,8 +103,8 @@ export default function Results({ items, people, charges, onReset }) {
         </button>
       </div>
       <div className="actions">
-        <button onClick={onReset}>
-          <i className="ti ti-refresh" aria-hidden="true"></i> reset
+        <button onClick={onBack}>
+          <i className="ti ti-arrow-left" aria-hidden="true"></i> back
         </button>
       </div>
 

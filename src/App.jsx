@@ -37,10 +37,25 @@ function App() {
     setScreenIndex(0);
   };
 
+  const handleResetClick = () => {
+    if (window.confirm('start over? this clears the current bill and split.')) {
+      reset();
+    }
+  };
+
   return (
     <>
       <div className="header">
         <div className="brand">dutch.</div>
+        {screen !== 'upload' && (
+          <button
+            className="reset-button"
+            onClick={handleResetClick}
+            aria-label="start over"
+          >
+            <i className="ti ti-refresh" aria-hidden="true"></i>
+          </button>
+        )}
       </div>
 
       {screen === 'upload' && (
@@ -116,7 +131,7 @@ function App() {
       )}
 
       {screen === 'results' && (
-        <Results items={items} people={people} charges={charges} onReset={reset} />
+        <Results items={items} people={people} charges={charges} onBack={() => goTo('tax')} />
       )}
     </>
   );

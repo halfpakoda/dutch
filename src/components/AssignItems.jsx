@@ -2,14 +2,19 @@ import { useState } from 'react';
 
 export default function AssignItems({ items, people, charges, onChange, onNext, onBack }) {
   const [localItems, setLocalItems] = useState(items);
-  const [expandedId, setExpandedId] = useState(items[0]?.id ?? null);
+  const [expandedIds, setExpandedIds] = useState(() => new Set(items[0] ? [items[0].id] : []));
 
   const itemsTotal = localItems.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
   const chargesTotal = (charges || []).reduce((sum, c) => sum + (c.amount || 0), 0);
   const grandTotal = itemsTotal + chargesTotal;
 
   const toggleExpand = (id) => {
-    setExpandedId((prev) => (prev === id ? null : id));
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
 
   const togglePerson = (itemId, personId) => {
@@ -50,7 +55,7 @@ export default function AssignItems({ items, people, charges, onChange, onNext, 
 
       <div className="card" style={{ padding: 0 }}>
         {localItems.map((item, i) => {
-          const isOpen = expandedId === item.id;
+          const isOpen = expandedIds.has(item.id);
           return (
             <div key={item.id}>
               <div style={{ padding: '12px 14px' }}>
@@ -131,7 +136,7 @@ export default function AssignItems({ items, people, charges, onChange, onNext, 
 
       {!allAssigned && (
         <div style={{ fontSize: 10, color: '#a32d2d', marginTop: 10 }}>
-          * marked items still need someone
+          * items still need at least one person assigned before you can continue
         </div>
       )}
 
